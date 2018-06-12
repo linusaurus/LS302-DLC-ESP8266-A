@@ -76,21 +76,21 @@ void callback(char* topic, byte* payload, unsigned int length) {
   // Switch on the LED if an 1 was received as first character
   if ((char)payload[0] == '0') {
     MotorState = 0;  // Stop Motor
-    led.begin(BEACON_LED).blink(30,2000);  //Standby
+    led.begin(BEACON_LED).blink(30,2000).trigger(led.EVT_START);  //Standby
     #ifdef DEBUG
     Serial.println("Motor State -> 0");
     #endif
     
   } else if ((char)payload[0] == '1') {    
     MotorState = 1;  // Raise Doors
-    led.begin(BEACON_LED).blink(100,200);  //Raising Blink-----   
+    led.begin(BEACON_LED).blink(100,200).trigger(led.EVT_START);  //Raising Blink-----   
     #ifdef DEBUG
     Serial.println("Motor State -> 1");    
     #endif
     
   } else if ((char)payload[0] == '2') {
     MotorState = 2;  //Lower Doors
-    led.begin(BEACON_LED).blink(400,400);  //Lower Blink-----
+    led.begin(BEACON_LED).blink(400,400).trigger(led.EVT_START);  //Lower Blink-----
     
     #ifdef DEBUG
     Serial.print("Motor State -> 2 ");
@@ -147,6 +147,7 @@ void OnPositionChanged(){
       client.publish(outTopic, "1");
       EEPROM.write(0,newDoorPosition);
       EEPROM.commit();
+      led.begin(BEACON_LED).blink(20,2000).trigger(led.EVT_START);
       #ifdef DEBUG
       Serial.println("-> Send 1");
       #endif
@@ -155,6 +156,7 @@ void OnPositionChanged(){
         client.publish(outTopic, "2");
         EEPROM.write(0,newDoorPosition);
         EEPROM.commit();
+        led.begin(BEACON_LED).blink(20,2000).trigger(led.EVT_START);
         #ifdef DEBUG
         Serial.println("-> Send 2");
         #endif
@@ -229,15 +231,13 @@ void setup() {
 
 void loop() {
  ArduinoOTA.handle();
-  // Set status beacon blink--
-  led.trigger( led.EVT_BLINK );
   
   
    if (!client.connected()) {
     reconnect();
   }
   client.loop();
-
+  automaton.run();
 
   //-----------------Encoder Loop ---------------------
   newPosition = encoder.read();
@@ -266,7 +266,7 @@ void loop() {
 
   OnPositionChanged();
 
-  automaton.run();
+  
 }
 ///----------------------END-LOOP------------------------
 
