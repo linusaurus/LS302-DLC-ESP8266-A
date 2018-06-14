@@ -44,7 +44,7 @@ const int STATUS_LED = 16;
 const int BEACON_LED = 13;
 //------------------------MOTOR OPERATION---------------------  
 byte MotorState= 0;  // 0=STOP; 1=RAISE ; 2=LOWER
-long HI_LIMIT = 30000;
+long HI_LIMIT = 55000;
 long LO_LIMIT = 0;
 //------------------------------------------------------------
 //-----------------------ENCODER-----------------------------
@@ -144,21 +144,21 @@ void OnPositionChanged(){
   // check for value change
    if(newDoorPosition != oldDoorPosition){
       if(newDoorPosition==1){
-      client.publish(outTopic, "1");
+      client.publish(outTopic, "3");
       EEPROM.write(0,newDoorPosition);
       EEPROM.commit();
       led.begin(BEACON_LED).blink(20,2000).trigger(led.EVT_START);
       #ifdef DEBUG
-      Serial.println("-> Send 1");
+      Serial.println("-> Send 3");
       #endif
         }
       if(newDoorPosition==2){
-        client.publish(outTopic, "2");
+        client.publish(outTopic, "4");
         EEPROM.write(0,newDoorPosition);
         EEPROM.commit();
         led.begin(BEACON_LED).blink(20,2000).trigger(led.EVT_START);
         #ifdef DEBUG
-        Serial.println("-> Send 2");
+        Serial.println("-> Send 4");
         #endif
         }
               
