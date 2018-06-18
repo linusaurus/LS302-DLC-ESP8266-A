@@ -44,7 +44,7 @@ const int STATUS_LED = 16;
 const int BEACON_LED = 13;
 //------------------------MOTOR OPERATION---------------------  
 byte MotorState= 0;  // 0=STOP; 1=RAISE ; 2=LOWER
-long HI_LIMIT = 55000;
+long HI_LIMIT = 65000;
 long LO_LIMIT = 0;
 //------------------------------------------------------------
 //-----------------------ENCODER-----------------------------
@@ -77,9 +77,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
   if ((char)payload[0] == '0') {
     MotorState = 0;  // Stop Motor
     led.begin(BEACON_LED).blink(30,2000).trigger(led.EVT_START);  //Standby
-    #ifdef DEBUG
+    //#ifdef DEBUG
     Serial.println("Motor State -> 0");
-    #endif
+    //#endif
     
   } else if ((char)payload[0] == '1') {    
     MotorState = 1;  // Raise Doors
